@@ -6,8 +6,7 @@ import "dayjs/locale/zh-cn";
 import { map } from "nanostores";
 import Polyglot from "node-polyglot";
 import { useEffect } from "react";
-import { settingsState } from "../store/settingsState";
-import { updateSettings } from "../store/settingsState";
+import { settingsState, updateSettings } from "../store/settingsState";
 import { getBrowserLanguage } from "../utils/locales";
 import { createSetter } from "../utils/nanostores";
 
@@ -23,6 +22,7 @@ const loadLanguage = async (language, polyglot) => {
   try {
     phrases = await import(`../locales/${language}.json`);
   } catch (error) {
+    console.error("Failed to load language: ", error);
     phrases = await import("../locales/en-US.json");
     locale = "en-US";
   }

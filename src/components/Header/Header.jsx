@@ -1,5 +1,6 @@
 import {
   Button,
+  Divider,
   Drawer,
   Dropdown,
   Menu,
@@ -14,6 +15,7 @@ import {
   IconEye,
   IconEyeInvisible,
   IconGithub,
+  IconLink,
   IconMenu,
   IconMoonFill,
   IconPlus,
@@ -31,6 +33,7 @@ import { polyglotState } from "../../hooks/useLanguage";
 import { useModalToggle } from "../../hooks/useModalToggle";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { resetAuth } from "../../store/authState";
+import { authState } from "../../store/authState";
 import { resetContent } from "../../store/contentState";
 import { resetData } from "../../store/dataState";
 import {
@@ -42,6 +45,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import "./Header.css";
 
 const Header = () => {
+  const { server } = useStore(authState);
   const { showAllFeeds, theme } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
 
@@ -163,6 +167,7 @@ const Header = () => {
             }
           />
           <Dropdown
+            position="bottom"
             droplist={
               <Menu defaultSelectedKeys={[theme]} className="theme-menu">
                 {themeOptions.map(({ label, value }) => (
@@ -172,7 +177,7 @@ const Header = () => {
                     onClick={() => updateSettings({ theme: value })}
                   >
                     {label}
-                    {theme === value && <IconCheck style={{ marginLeft: 8 }} />}
+                    {theme === value && <IconCheck />}
                   </Menu.Item>
                 ))}
               </Menu>
@@ -186,6 +191,8 @@ const Header = () => {
             />
           </Dropdown>
           <Dropdown
+            position="br"
+            trigger="click"
             droplist={
               <Menu>
                 <Menu.Item
@@ -195,17 +202,24 @@ const Header = () => {
                   <IconSettings className="icon-right" />
                   {polyglot.t("header.settings")}
                 </Menu.Item>
-                <Menu.Item key="1" onClick={() => setResetModalVisible(true)}>
+                <Menu.Item
+                  key="1"
+                  onClick={() => window.open(`${server}/settings`, "_blank")}
+                >
+                  <IconLink className="icon-right" />
+                  {polyglot.t("header.miniflux_settings")}
+                </Menu.Item>
+                <Menu.Item key="2" onClick={() => setResetModalVisible(true)}>
                   <IconRefresh className="icon-right" />
                   {polyglot.t("header.reset_settings")}
                 </Menu.Item>
-                <Menu.Item key="2" onClick={() => setLogoutModalVisible(true)}>
+                <Divider style={{ margin: "4px 0" }} />
+                <Menu.Item key="3" onClick={() => setLogoutModalVisible(true)}>
                   <IconPoweroff className="icon-right" />
                   {polyglot.t("header.logout")}
                 </Menu.Item>
               </Menu>
             }
-            trigger="click"
           >
             <Button icon={<IconUser />} shape="circle" size="small" />
           </Dropdown>
@@ -213,19 +227,19 @@ const Header = () => {
       </div>
 
       <Modal
+        onCancel={() => setResetModalVisible(false)}
+        onOk={handleResetSettings}
         title={polyglot.t("header.settings_reset_confirm")}
         visible={resetModalVisible}
-        onOk={handleResetSettings}
-        onCancel={() => setResetModalVisible(false)}
       >
         <p>{polyglot.t("header.settings_reset_description")}</p>
       </Modal>
 
       <Modal
+        onCancel={() => setLogoutModalVisible(false)}
+        onOk={handleLogout}
         title={polyglot.t("header.logout_confirm")}
         visible={logoutModalVisible}
-        onOk={handleLogout}
-        onCancel={() => setLogoutModalVisible(false)}
       >
         <p>{polyglot.t("header.logout_description")}</p>
       </Modal>

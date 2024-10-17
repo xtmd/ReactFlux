@@ -5,7 +5,6 @@ import { forwardRef, useCallback, useEffect } from "react";
 import useLoadMore from "../../hooks/useLoadMore";
 import ArticleCard from "./ArticleCard";
 import LoadingCards from "./LoadingCards";
-import SearchAndSortBar from "./SearchAndSortBar";
 
 import { useStore } from "@nanostores/react";
 import { useInView } from "react-intersection-observer";
@@ -13,6 +12,7 @@ import SimpleBar from "simplebar-react";
 import { contentState, filteredEntriesState } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
 import { mergeRefs } from "../../utils/refs";
+import FadeInMotion from "../ui/FadeInMotion";
 import Ripple from "../ui/Ripple";
 import "./ArticleList.css";
 
@@ -98,42 +98,43 @@ const ArticleList = forwardRef(
 
     return (
       <>
-        <SearchAndSortBar />
         <SimpleBar className="entry-list" ref={ref}>
           <LoadingCards />
           {isArticleListReady && (
-            <div ref={cardsRef}>
-              <div
-                style={{
-                  height: virtualizer.getTotalSize(),
-                  width: "100%",
-                  position: "relative",
-                }}
-              >
-                {virtualItems.map((item) => (
-                  <div
-                    key={item.key}
-                    data-index={item.index}
-                    ref={getItemRef(item.index)}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      transform: `translateY(${item.start}px)`,
-                    }}
-                  >
-                    <ArticleCard
-                      entry={filteredEntries[item.index]}
-                      handleEntryClick={handleEntryClick}
-                      mini={isCompactLayout}
+            <FadeInMotion>
+              <div ref={cardsRef}>
+                <div
+                  style={{
+                    height: virtualizer.getTotalSize(),
+                    width: "100%",
+                    position: "relative",
+                  }}
+                >
+                  {virtualItems.map((item) => (
+                    <div
+                      key={item.key}
+                      data-index={item.index}
+                      ref={getItemRef(item.index)}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        transform: `translateY(${item.start}px)`,
+                      }}
                     >
-                      <Ripple color="var(--color-text-4)" duration={1000} />
-                    </ArticleCard>
-                  </div>
-                ))}
+                      <ArticleCard
+                        entry={filteredEntries[item.index]}
+                        handleEntryClick={handleEntryClick}
+                        mini={isCompactLayout}
+                      >
+                        <Ripple color="var(--color-text-4)" duration={1000} />
+                      </ArticleCard>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            </FadeInMotion>
           )}
           <LoadMoreComponent getEntries={getEntries} />
         </SimpleBar>

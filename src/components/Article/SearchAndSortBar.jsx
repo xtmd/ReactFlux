@@ -1,5 +1,13 @@
-import { Button, Input, Select, Tooltip } from "@arco-design/web-react";
 import {
+  Button,
+  Calendar,
+  Dropdown,
+  Input,
+  Select,
+  Tooltip,
+} from "@arco-design/web-react";
+import {
+  IconCalendar,
   IconQuestionCircle,
   IconSortAscending,
   IconSortDescending,
@@ -11,15 +19,17 @@ import { polyglotState } from "../../hooks/useLanguage";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import {
   contentState,
+  setFilterDate,
   setFilterString,
   setFilterType,
 } from "../../store/contentState";
 import { settingsState, updateSettings } from "../../store/settingsState";
+import { getStartOfToday } from "../../utils/date";
 import { debounce } from "../../utils/time";
 import "./SearchAndSortBar.css";
 
 const SearchAndSortBar = () => {
-  const { filterString, filterType } = useStore(contentState);
+  const { filterDate, filterString, filterType } = useStore(contentState);
   const { orderDirection } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
   const tooltipLines = polyglot.t("search.tooltip").split("\n");
@@ -44,6 +54,7 @@ const SearchAndSortBar = () => {
   };
 
   useEffect(() => {
+    setFilterDate(null);
     setFilterType("title");
     setFilterString("");
   }, []);
@@ -61,7 +72,7 @@ const SearchAndSortBar = () => {
         allowClear
         onChange={handleInputChange}
         placeholder={polyglot.t("search.placeholder")}
-        style={{ width: isBelowMedium ? "100%" : 308, marginLeft: 8 }}
+        style={{ width: isBelowMedium ? "100%" : 272, marginLeft: 8 }}
         value={currentFilterString}
         addBefore={
           <Select
@@ -104,6 +115,35 @@ const SearchAndSortBar = () => {
         }
       />
       <div className="button-group">
+        <Dropdown
+          position="bottom"
+          trigger="click"
+          droplist={
+            <>
+              <Calendar panel onChange={setFilterDate} value={filterDate} />
+              <div className="calendar-actions">
+                <button
+                  className="calendar-action-button left-button"
+                  onClick={() => setFilterDate(null)}
+                  type="button"
+                >
+                  {polyglot.t("search.reset_date")}
+                </button>
+                <button
+                  className="calendar-action-button right-button"
+                  onClick={() => setFilterDate(getStartOfToday())}
+                  type="button"
+                >
+                  {polyglot.t("search.today")}
+                </button>
+              </div>
+            </>
+          }
+        >
+          <Tooltip mini content={polyglot.t("search.select_date")}>
+            <Button shape="circle" size="small" icon={<IconCalendar />} />
+          </Tooltip>
+        </Dropdown>
         <Tooltip
           mini
           content={

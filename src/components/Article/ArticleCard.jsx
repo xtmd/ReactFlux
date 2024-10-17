@@ -5,21 +5,21 @@ import {
   IconStar,
   IconStarFill,
 } from "@arco-design/web-react/icon";
-import { animated, useSpring } from "@react-spring/web";
 import classNames from "classnames";
 import { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable";
 
 import { useStore } from "@nanostores/react";
+import { motion } from "framer-motion";
 import useEntryActions from "../../hooks/useEntryActions";
 import { polyglotState } from "../../hooks/useLanguage";
 import { contentState } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
 import { generateReadingTime, generateRelativeTime } from "../../utils/date";
 import FeedIcon from "../ui/FeedIcon";
-import "./ArticleCard.css";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
+import "./ArticleCard.css";
 
 const ArticleCardImage = ({ entry, isThumbnail }) => {
   if (!entry.imgSrc) {
@@ -52,7 +52,8 @@ const getPadding = (imgSrc, isMini) => {
 };
 
 const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
-  const { showDetailedRelativeTime } = useStore(settingsState);
+  const { showDetailedRelativeTime, showEstimatedReadingTime } =
+    useStore(settingsState);
   const contentClass = classNames({
     "article-card-mini-content": mini,
     "article-card-mini-content-padding": mini && showFeedIcon,
@@ -85,8 +86,12 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
           {entry.feed.title}
           <br />
           {generateRelativeTime(entry.published_at, showDetailedRelativeTime)}
-          <br />
-          {generateReadingTime(entry.reading_time)}
+          {showEstimatedReadingTime && (
+            <>
+              <br />
+              {generateReadingTime(entry.reading_time)}
+            </>
+          )}
         </Typography.Text>
         {entry.starred && <IconStarFill className="icon-starred" />}
       </div>
@@ -170,12 +175,15 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
     },
   });
 
-  const styles = useSpring({ x: swipeOffset });
-
   return (
     <div className="article-card" key={entry.id} {...handlers}>
       <div ref={ref}>
-        <animated.div className="swipe-card" style={styles}>
+        <motion.div
+          className="swipe-card"
+          style={{ x: swipeOffset }}
+          animate={{ x: swipeOffset }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        >
           <Card
             className={classNames(
               "swipe-content",
@@ -202,7 +210,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
               }
             />
           </Card>
-        </animated.div>
+        </motion.div>
         <div className="swipe-actions">
           <div className="swipe-action left">
             {isStarred ? (

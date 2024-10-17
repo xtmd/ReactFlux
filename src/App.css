@@ -106,7 +106,8 @@
     display: none !important;
   }
 
-  .entry-panel {
+  .entry-panel,
+  .action-buttons {
     padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
   }
 

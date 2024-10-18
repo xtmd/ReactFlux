@@ -13,17 +13,20 @@ export const checkIsInLast24Hours = (dateString) => {
   return targetDate.isAfter(dayjs().subtract(24, "hour"));
 };
 
-export const get24HoursAgoTimestamp = () => {
-  return dayjs().subtract(24, "hour").unix();
-};
+export const get24HoursAgoTimestamp = () => dayjs().subtract(24, "hour").unix();
 
-export const getUTCDate = () => {
-  return dayjs().utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
-};
+export const getTimestamp = (dateString) => dayjs(dateString).unix();
 
-export const generateReadableDate = (dateString) => {
-  return dayjs(dateString).format("dddd, MMMM D, YYYY h:mm A");
-};
+export const getStartOfToday = () => dayjs().startOf("day");
+
+export const getDayEndTimestamp = (dateString) =>
+  dayjs(dateString).endOf("day").unix();
+
+export const getUTCDate = () =>
+  dayjs().utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
+
+export const generateReadableDate = (dateString) =>
+  dayjs(dateString).format("dddd, MMMM D, YYYY h:mm A");
 
 export const generateRelativeTime = (dateString, showDetailed) => {
   const { polyglot } = polyglotState.get();

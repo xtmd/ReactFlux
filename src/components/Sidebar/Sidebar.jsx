@@ -163,9 +163,12 @@ const FeedMenuItem = ({ feed }) => {
   const { showFeedIcon } = useStore(settingsState);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const isSelected = location.pathname === `/feed/${feed.id}`;
 
   return (
     <MenuItem
+      className={classNames({ "arco-menu-selected": isSelected })}
       key={`/feed/${feed.id}`}
       style={{ position: "relative", overflow: "hidden" }}
       onClick={(e) => {
@@ -253,56 +256,48 @@ const Sidebar = () => {
 
   return (
     <div className="sidebar-container">
-      <Menu hasCollapseButton={false} selectedKeys={selectedKeys}>
-        <div className="menu-header">
-          <Avatar className="avatar" size={32}>
-            <IconBook style={{ color: "var(--color-bg-1)" }} />
-          </Avatar>
-          <Typography.Title heading={6} style={{ margin: 0 }}>
-            ReactFlux
-          </Typography.Title>
-        </div>
-        <Typography.Title
-          className="section-title"
-          heading={6}
-          style={{ paddingLeft: "12px" }}
-        >
-          {polyglot.t("sidebar.articles")}
-        </Typography.Title>
-        <Skeleton
-          loading={!isAppDataReady}
-          animation={true}
-          text={{ rows: 3 }}
-        />
-        {isAppDataReady && <SidebarMenuItems />}
-        <Typography.Title
-          className="section-title"
-          heading={6}
-          style={{ paddingLeft: "12px" }}
-        >
-          {polyglot.t("sidebar.feeds")}
-        </Typography.Title>
-      </Menu>
-      <div className="feeds-menu-wrapper">
-        <SimpleBar style={{ maxHeight: "100%" }}>
-          <Menu
-            autoScrollIntoView={true}
-            hasCollapseButton={false}
-            selectedKeys={selectedKeys}
+      <SimpleBar style={{ maxHeight: "100%" }}>
+        <Menu hasCollapseButton={false} selectedKeys={selectedKeys}>
+          <div className="menu-header">
+            <Avatar className="avatar" size={32}>
+              <IconBook style={{ color: "var(--color-bg-1)" }} />
+            </Avatar>
+            <Typography.Title heading={6} style={{ margin: 0 }}>
+              ReactFlux
+            </Typography.Title>
+          </div>
+          <Typography.Title
+            className="section-title"
+            heading={6}
+            style={{ paddingLeft: "12px" }}
           >
-            <Skeleton
-              loading={!isAppDataReady}
-              animation={true}
-              text={{ rows: 6 }}
-            />
-            {isAppDataReady && (
-              <Collapse triggerRegion="icon" bordered={false}>
-                <CategoryGroup />
-              </Collapse>
-            )}
-          </Menu>
-        </SimpleBar>
-      </div>
+            {polyglot.t("sidebar.articles")}
+          </Typography.Title>
+          <Skeleton
+            loading={!isAppDataReady}
+            animation={true}
+            text={{ rows: 3 }}
+          />
+          {isAppDataReady && <SidebarMenuItems />}
+          <Typography.Title
+            className="section-title"
+            heading={6}
+            style={{ paddingLeft: "12px" }}
+          >
+            {polyglot.t("sidebar.feeds")}
+          </Typography.Title>
+          <Skeleton
+            loading={!isAppDataReady}
+            animation={true}
+            text={{ rows: 6 }}
+          />
+          {isAppDataReady && (
+            <Collapse triggerRegion="icon" bordered={false}>
+              <CategoryGroup />
+            </Collapse>
+          )}
+        </Menu>
+      </SimpleBar>
     </div>
   );
 };

@@ -27,6 +27,7 @@
     "feeds": "Feeds"
   },
   "actions": {
+    "copy_to_clipboard_tooltip": "Copiar al portapapeles",
     "copied": "Copiado!",
     "mark_as_read_error": "Error al marcar como leído, por favor intente de nuevo más tarde",
     "mark_as_unread_error": "Error al marcar como no leído, por favor intente de nuevo más tarde",
@@ -39,11 +40,20 @@
   },
   "article_card": {
     "reading_time": "%{time} de lectura",
-    "marked_as_starred": "Marcado como favorito",
-    "unmarked_as_starred": "Desmarcado como favorito",
+    "starred": "Marcado como favorito",
+    "unstarred": "Desmarcado como favorito",
     "marked_as_read": "Marcado como leído",
     "marked_as_unread": "Marcado como no leído",
-    "update_failed": "Error al actualizar, por favor intente de nuevo"
+    "update_failed": "Error al actualizar, por favor intente de nuevo",
+    "close_tooltip": "Cerrar artículo",
+    "previous_tooltip": "Artículo anterior",
+    "next_tooltip": "Artículo siguiente",
+    "mark_as_read_tooltip": "Marcar como leído",
+    "mark_as_unread_tooltip": "Marcar como no leído",
+    "star_tooltip": "Marcar como favorito",
+    "unstar_tooltip": "Desmarcar como favorito",
+    "fetch_original_tooltip": "Obtener contenido original",
+    "save_to_third_party_services_tooltip": "Guardar en servicios de terceros"
   },
   "article_list": {
     "sort_direction_desc": "Las más recientes primero",
@@ -52,7 +62,9 @@
     "filter_status_unread": "Sin leer",
     "mark_all_as_read_success": "Todos los artículos marcados como leídos",
     "mark_all_as_read_error": "No se pudo marcar todo como leído",
-    "mark_all_as_read_confirm": "¿Marcar todo como leído?"
+    "mark_all_as_read_confirm": "¿Marcar todo como leído?",
+    "mark_all_as_read_tooltip": "Marcar todo como leído",
+    "refresh_tooltip": "Actualizar"
   },
   "content": {
     "mark_as_read_error": "No se pudo marcar como leído, por favor intente de nuevo más tarde"
@@ -62,6 +74,9 @@
   },
   "search": {
     "placeholder": "Buscar...",
+    "clear_date": "Limpiar",
+    "select_date": "Seleccionar fecha",
+    "today": "Hoy",
     "tooltip": "Sintaxis de búsqueda:\n• Texto: manzana plátano\n• Texto exacto: \"manzana roja\"\n• Excluir: -texto o -\"texto\"\n• Debe incluir: +texto o +\"texto\"\n• Búsqueda OR: texto1|texto2\nEjemplo: \"manzana roja\" +fresca -podrida plátano|naranja",
     "type_title": "Título",
     "type_content": "Contenido",
@@ -72,6 +87,7 @@
   "main": {
     "add_feed_success": "Feed añadido con éxito",
     "add_feed_error": "No se pudo añadir el feed",
+    "add_feed_error_duplicate": "Este feed ya existe",
     "add_feed_url_empty": "La URL del feed no puede estar vacía",
     "add_feed_modal_title": "Añadir feed",
     "add_feed_modal_feed_url_label": "URL del feed",
@@ -89,6 +105,7 @@
     "show_all_feeds": "Mostrar todos los feeds",
     "hide_some_feeds": "Ocultar algunos feeds",
     "settings": "Ajustes",
+    "miniflux_settings": "Ajustes de Miniflux",
     "reset_settings": "Restablecer ajustes",
     "logout": "Cerrar sesión",
     "settings_reset_confirm": "Confirmar el restablecimiento",
@@ -116,8 +133,10 @@
     "table_category": "Categoía",
     "table_checked_at": "Comprobado el",
     "table_actions": "Acciones",
-    "table_feed_edit_label": "Editar este feed",
-    "table_feed_refresh_label": "Actualizar este feed",
+    "table_feed_bulk_update_tooltip": "Actualizar hosts en masa",
+    "table_feed_edit_tooltip": "Editar este feed",
+    "table_feed_refresh_tooltip": "Actualizar este feed",
+    "table_feed_remove_tooltip": "Dejar de seguir este feed",
     "table_feed_remove_confirm": "¿Dejar de seguir este feed?",
     "update_feed_success": "Feed actualizado con éxito",
     "update_feed_error": "No se pudo actualizar el feed",
@@ -183,12 +202,14 @@
     "theme_color_label": "Color del tema",
     "theme_color_description": "Escoger su color del tema",
     "theme_color_aria_label": "Cambiar el color del tema a %{color}",
-    "compact_article_list_label": "Compactar la lista de artículos",
-    "compact_article_list_description": "Utilizar la miniatura pequeña en la lista de artículos",
+    "compact_article_card_label": "Compactar la tarjeta de artículo",
+    "compact_article_card_description": "Utilizar la miniatura pequeña en la tarjeta de artículo",
     "show_detailed_relative_time_label": "Mostrar tiempo relativo detallado",
-    "show_detailed_relative_time_description": "Mostrar tiempo relativo detallado en la lista de artículos",
+    "show_detailed_relative_time_description": "Mostrar tiempo relativo detallado en la tarjeta de artículo",
+    "show_estimated_reading_time_label": "Mostrar tiempo estimado de lectura",
+    "show_estimated_reading_time_description": "Mostrar tiempo estimado de lectura en la tarjeta de artículo",
     "show_feed_icon_label": "Mostar el icono del feed",
-    "show_feed_icon_description": "Mostar el icono del feed en la lista de de feeds y la lista de artículos",
+    "show_feed_icon_description": "Mostar el icono del feed en la lista de de feeds y la tarjeta de artículo",
     "language_label": "Idioma",
     "language_description": "Escoger su idioma:",
     "font_size_label": "Tamaño de la fuente",

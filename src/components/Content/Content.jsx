@@ -1,7 +1,6 @@
 import { Message, Typography } from "@arco-design/web-react";
 import { IconEmpty } from "@arco-design/web-react/icon";
 import { useEffect, useRef } from "react";
-import { CSSTransition } from "react-transition-group";
 
 import { useStore } from "@nanostores/react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -11,6 +10,7 @@ import useArticleList from "../../hooks/useArticleList";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import { polyglotState } from "../../hooks/useLanguage";
+import { useScreenWidth } from "../../hooks/useScreenWidth";
 import {
   contentState,
   setActiveContent,
@@ -23,13 +23,13 @@ import { settingsState } from "../../store/settingsState";
 import ActionButtons from "../Article/ActionButtons";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
+import SearchAndSortBar from "../Article/SearchAndSortBar";
 import { useContentContext } from "./ContentContext";
 import FooterPanel from "./FooterPanel";
 import "./Content.css";
-import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const { activeContent, isArticleListReady, isArticleLoading } =
+  const { activeContent, filterDate, isArticleLoading } =
     useStore(contentState);
   const { isAppDataReady } = useStore(dataState);
   const { orderBy, orderDirection, showAllFeeds, showStatus } =
@@ -61,6 +61,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const { fetchAppData } = useAppData();
   const { fetchArticleList } = useArticleList(info, getEntries);
+  const { isBelowMedium } = useScreenWidth();
 
   const {
     handleFetchContent,
@@ -147,24 +148,23 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     refreshArticleList(getEntries);
-  }, [orderDirection, showStatus]);
+  }, [filterDate, orderDirection, showStatus]);
 
   return (
     <>
-      <div className="entry-col">
-        <CSSTransition
-          classNames="slide"
-          in={isArticleListReady}
-          nodeRef={cardsRef}
-          timeout={200}
-        >
-          <ArticleList
-            cardsRef={cardsRef}
-            getEntries={getEntries}
-            handleEntryClick={handleEntryClick}
-            ref={entryListRef}
-          />
-        </CSSTransition>
+      <div
+        className="entry-col"
+        style={{
+          opacity: isBelowMedium && isArticleLoading ? 0 : 1,
+        }}
+      >
+        <SearchAndSortBar />
+        <ArticleList
+          cardsRef={cardsRef}
+          getEntries={getEntries}
+          handleEntryClick={handleEntryClick}
+          ref={entryListRef}
+        />
         <FooterPanel
           info={info}
           refreshArticleList={() => refreshArticleList(getEntries)}
@@ -173,18 +173,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       </div>
       {activeContent ? (
         <div className="article-container" {...handlers}>
-          <CSSTransition
-            classNames="slide"
-            in={!isArticleLoading}
-            nodeRef={entryDetailRef}
-            timeout={200}
-            unmountOnExit
-          >
-            <ArticleDetail ref={entryDetailRef} />
-          </CSSTransition>
-          <CSSTransition in={!isArticleLoading} timeout={200} unmountOnExit>
-            <ActionButtons />
-          </CSSTransition>
+          {!isArticleLoading && <ArticleDetail ref={entryDetailRef} />}
+          <ActionButtons />
         </div>
       ) : (
         <div className="content-empty">

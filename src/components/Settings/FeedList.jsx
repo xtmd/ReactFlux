@@ -31,6 +31,7 @@ import { generateRelativeTime, getUTCDate } from "../../utils/date";
 
 import { useStore } from "@nanostores/react";
 import { atom, computed } from "nanostores";
+import { useNavigate } from "react-router-dom";
 import { polyglotState } from "../../hooks/useLanguage";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import {
@@ -42,6 +43,8 @@ import { settingsState } from "../../store/settingsState";
 import { filterByQuery } from "../../utils/kmp";
 import { createSetter } from "../../utils/nanostores";
 import { sleep } from "../../utils/time";
+import CustomLink from "../ui/CustomLink";
+import CustomTooltip from "../ui/CustomTooltip";
 import "./FeedList.css";
 
 const filterStringState = atom("");
@@ -180,12 +183,17 @@ const RefreshModal = ({ visible, setVisible }) => {
 
   return (
     <>
-      <Button
-        icon={<IconRefresh />}
-        shape="circle"
-        size="small"
-        onClick={() => setVisible(true)}
-      />
+      <CustomTooltip
+        content={polyglot.t("feed_table.refresh_feeds_tooltip")}
+        mini
+      >
+        <Button
+          icon={<IconRefresh />}
+          shape="circle"
+          size="small"
+          onClick={() => setVisible(true)}
+        />
+      </CustomTooltip>
       <Modal
         className="edit-modal"
         onCancel={closeModal}
@@ -257,9 +265,15 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
         setNewHost("");
       }}
     >
-      <p>{polyglot.t("feed_table.modal_bulk_update_description")}</p>
       <Input
         placeholder="rsshub.app"
+        prefix={
+          <Tooltip
+            content={polyglot.t("feed_table.modal_bulk_update_description")}
+          >
+            <IconQuestionCircle />
+          </Tooltip>
+        }
         value={newHost}
         onChange={(value) => setNewHost(value)}
       />
@@ -421,6 +435,8 @@ const FeedList = () => {
 
   const { isBelowMedium } = useScreenWidth();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     setFilterString("");
   }, []);
@@ -486,9 +502,9 @@ const FeedList = () => {
 
         return (
           <Typography.Ellipsis expandable={false}>
-            <Tooltip mini content={tooltipContent}>
-              {displayText}
-            </Tooltip>
+            <CustomTooltip content={tooltipContent} mini>
+              <CustomLink url={`/feed/${feed.key}`} text={displayText} />
+            </CustomTooltip>
           </Typography.Ellipsis>
         );
       },
@@ -509,9 +525,15 @@ const FeedList = () => {
       title: polyglot.t("feed_table.table_category"),
       dataIndex: "category.title",
       sorter: (a, b) => a.category.title.localeCompare(b.category.title, "en"),
-      render: (category) => (
+      render: (category, feed) => (
         <Typography.Ellipsis expandable={false} showTooltip={true}>
-          <Tag>{category}</Tag>
+          <Tag
+            size="small"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate(`/category/${feed.category.id}`)}
+          >
+            {category}
+          </Tag>
         </Typography.Ellipsis>
       ),
     },
@@ -533,32 +555,41 @@ const FeedList = () => {
       fixed: "right",
       width: 100,
       render: (_col, record) => (
-        <Space>
-          <button
-            aria-label={polyglot.t("feed_table.table_feed_edit_label")}
-            className="list-item-action"
-            onClick={() => handleSelectFeed(record)}
-            type="button"
+        <Space style={{ marginLeft: -10 }}>
+          <CustomTooltip
+            content={polyglot.t("feed_table.table_feed_edit_tooltip")}
+            mini
           >
-            <IconEdit />
-          </button>
-          <button
-            aria-label={polyglot.t("feed_table.table_feed_refresh_label")}
-            className="list-item-action"
-            onClick={() => refreshSingleFeed(record)}
-            type="button"
+            <Button
+              icon={<IconEdit />}
+              shape="circle"
+              size="mini"
+              onClick={() => handleSelectFeed(record)}
+            />
+          </CustomTooltip>
+          <CustomTooltip
+            content={polyglot.t("feed_table.table_feed_refresh_tooltip")}
+            mini
           >
-            <IconRefresh />
-          </button>
+            <Button
+              icon={<IconRefresh />}
+              shape="circle"
+              size="mini"
+              onClick={() => refreshSingleFeed(record)}
+            />
+          </CustomTooltip>
           <Popconfirm
             focusLock
             position="left"
             title={polyglot.t("feed_table.table_feed_remove_confirm")}
             onOk={() => removeFeed(record)}
           >
-            <span className="list-item-action">
-              <IconDelete />
-            </span>
+            <CustomTooltip
+              content={polyglot.t("feed_table.table_feed_remove_tooltip")}
+              mini
+            >
+              <Button icon={<IconDelete />} shape="circle" size="mini" />
+            </CustomTooltip>
           </Popconfirm>
         </Space>
       ),
@@ -624,12 +655,17 @@ const FeedList = () => {
           />
         </div>
         <div className="button-group">
-          <Button
-            icon={<IconEdit />}
-            shape="circle"
-            size="small"
-            onClick={() => setBulkUpdateModalVisible(true)}
-          />
+          <CustomTooltip
+            content={polyglot.t("feed_table.table_feed_bulk_update_tooltip")}
+            mini
+          >
+            <Button
+              icon={<IconEdit />}
+              shape="circle"
+              size="small"
+              onClick={() => setBulkUpdateModalVisible(true)}
+            />
+          </CustomTooltip>
           <BulkUpdateModal
             visible={bulkUpdateModalVisible}
             setVisible={setBulkUpdateModalVisible}
